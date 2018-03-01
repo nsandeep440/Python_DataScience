@@ -276,7 +276,95 @@ df.fillna(method='ffill', axis=1) # if prev value is not available it will remai
 # =============================================================================
 
 
+# =============================================================================
+# Combining Datasets: Concat and Append
+# =============================================================================
+#     Recall: Concatenation of NumPy Arrays
+# =============================================================================
+x,y,z=[1,2,3],[4,5,6],[7,8,9]
+np.concatenate([x, y, z])
+# =============================================================================
+# Simple Concatenation with pd.concat
+# =============================================================================
+ser1 = pd.Series(['A', 'B', 'C'], index=[1, 2, 3])
+ser2 = pd.Series(['D', 'E', 'F'], index=[4, 5, 6])
+pd.concat([ser1, ser2])
 
+def make_df(cols, ind): 
+    """Quickly make a DataFrame"""
+    data = {c: [str(c) + str(i) for i in ind] 
+        for c in cols}
+    return pd.DataFrame(data, ind) # example DataFrame
+           
+make_df('ABC', range(3))
+
+df1 = make_df('AB', [1, 2])
+df2 = make_df('AB', [3, 4])
+print(pd.concat([df1,df2]))
+
+df3 = make_df('AB', [0, 1])
+df4 = make_df('CD', [0, 1])
+print(pd.concat([df3,df4]))
+
+# =============================================================================
+# Duplicate indices
+# =============================================================================
+x = make_df('AB', [0, 1])
+y = make_df('AB', [2, 3])
+y.index = x.index # make duplicate indices!
+print(pd.concat([x, y]))
+
+# =============================================================================
+# Concatenation with joins
+# =============================================================================
+df5 = make_df('ABC', [1, 2])
+df6 = make_df('BCD', [3, 4])
+print(pd.concat([df5,df6], join='inner')) ## intersection - column wise
+# outer => union
+print(pd.concat([df5,df6], join_axes=[df5.columns]))
+# =============================================================================
+
+# =============================================================================
+# =============================================================================
+# # Combining Datasets: Merge and Join
+# =============================================================================
+
+# =============================================================================
+# Categories of Joins
+# one-to-one, many-to-one, and many-to-many joins.
+# =============================================================================
+# =============================================================================
+# One-to-one joins
+
+df1 = pd.DataFrame({'employee': ['Bob', 'Jake', 'Lisa', 'Sue'],
+                    'group': ['Accounting', 'Engineering', 'Engineering', 'HR']})
+df2 = pd.DataFrame({'employee': ['Lisa', 'Bob', 'Jake', 'Sue'],
+                    'hire_date': [2004, 2008, 2012, 2014]}) 
+print(df1); print(df2)
+df3 = pd.merge(df1, df2); df3
+# =============================================================================
+
+# =============================================================================
+# Many-to-one joins
+
+df4 = pd.DataFrame({'group': ['Accounting', 'Engineering', 'HR'],
+                    'supervisor': ['Carly', 'Guido', 'Steve']})
+df4
+pd.merge(df3, df4)
+# =============================================================================
+
+# =============================================================================
+# Many-to-many joins
+
+df5 = pd.DataFrame({'group': ['Accounting', 'Accounting','Engineering', 'Engineering', 'HR', 'HR'], 
+    'skills': ['math', 'spreadsheets', 'coding', 'linux','spreadsheets', 'organization']})
+df5
+pd.merge(df1, df5)
+
+
+# =============================================================================
+
+# =============================================================================
 
 
 
